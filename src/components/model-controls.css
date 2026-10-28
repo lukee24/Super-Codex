@@ -1,0 +1,174 @@
+.native-model-controls,
+.native-model-controls * { box-sizing: border-box; }
+
+.native-model-controls {
+  --control-purple: #a45ff4;
+  --control-popup: var(--surface, #fff);
+  --control-hover: var(--hover, #ededed);
+  --control-muted: var(--muted, #858585);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 7px 0 5px;
+  gap: 0;
+  border-radius: 16px;
+  color: var(--text, #222);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  -webkit-app-region: no-drag;
+}
+
+.native-model-controls:hover,
+.native-model-controls[data-open=true] { background: var(--control-hover); }
+
+.native-model-controls > button {
+  height: 28px;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  gap: 0;
+}
+
+.native-model-controls > button.native-speed-indicator { padding: 0 5px 0 0; font-size: 10px; gap: 2px; color: var(--control-purple); }
+.speed-symbol {display:inline-flex;align-items:center;justify-content:center;position:relative;min-width:11px;height:18px;}
+.speed-symbol svg + svg {margin-left:-5px;}
+.native-model-controls[data-speed="20"] .speed-symbol {filter:drop-shadow(0 0 3px #a26ef070);animation:speed-pulse 1.25s ease-in-out infinite;}
+.native-model-controls[data-speed="50"] .speed-symbol {color:#a366ee;filter:drop-shadow(0 0 4px #9c76ff90);animation:speed-pulse .8s ease-in-out infinite;}
+.native-model-controls[data-speed="50"] .speed-symbol svg:not(.speed-sparkles) {margin-left:-5px;}
+.native-model-controls > button.native-model-trigger { padding: 0 3px 0 2px; font-size: 12px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; display:block; white-space:nowrap; }
+.native-model-controls > button.native-effort-trigger { padding-left: 1px; gap: 7px; font-size: 12px; }
+.native-model-controls > .native-effort-trigger > span { color: var(--control-purple); }
+.native-model-controls > .native-effort-trigger > svg { color: var(--control-muted); }
+.native-model-controls[data-effort="instant"] {--control-purple:#8b8d91;--effort-start:#b5bac1;--effort-end:#dce1e6}
+.native-model-controls[data-effort="low"] {--control-purple:#7789a5;--effort-start:#809bbd;--effort-end:#b9c9df}
+.native-model-controls[data-effort="medium"] {--control-purple:#667fc1;--effort-start:#526da8;--effort-end:#9bace2}
+.native-model-controls[data-effort="high"] {--control-purple:#8574d4;--effort-start:#6456b9;--effort-end:#a998ee}
+.native-model-controls[data-effort="extra-high"] {--control-purple:#a070ea;--effort-start:#5d4cc5;--effort-end:#bd91ef}
+.native-model-controls[data-effort="ultra"] {--control-purple:#a45ff4;--effort-start:#5045bc;--effort-end:#b886f4}
+.native-model-controls[data-effort="ultimate"] {--control-purple:#b68bd8;--effort-start:#7155c5;--effort-end:#f2d7ad}
+.native-model-controls button:focus-visible { outline: 2px solid #af89e3; outline-offset: 2px; }
+
+.native-control-popover {
+  position: absolute;
+  z-index: 80;
+  right: -50px;
+  bottom: calc(100% + 5px);
+  width: 256px;
+  color: var(--text, #222);
+  background: var(--control-popup);
+  border: 1px solid color-mix(in srgb, var(--line, #e8e8e8) 65%, transparent);
+  border-radius: 16px;
+  box-shadow: 0 9px 30px #00000016, 0 1px 5px #00000008;
+  padding: 5px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  text-align: left;
+  white-space: normal;
+  animation: native-control-appear 110ms ease-out;
+}
+
+.native-menu-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 29px;
+  padding: 0 7px;
+  color: var(--control-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.native-menu-heading > small { font-size: 10px; color: var(--control-muted); }
+.native-model-options { max-height: 268px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #8885 transparent; }
+.native-model-menu .native-model-options {max-height:268px}
+.native-model-menu:focus{outline:none}
+.native-model-group + .native-model-group {border-top:1px solid var(--line,#e8e8e8);margin-top:5px;padding-top:4px}
+.native-model-section {display:flex;flex-direction:column;gap:2px;padding:6px 7px;color:var(--control-muted);font-size:11px;line-height:15px}
+.native-model-section small {font-size:10px;line-height:14px;color:var(--control-muted)}
+.native-model-note {font-size:11px;color:var(--control-muted);line-height:1.55;padding:2px 7px 9px;margin:0;white-space:normal}
+.native-model-controls .native-model-connect {margin:3px 7px 7px;width:calc(100% - 14px);height:30px;border-radius:8px;background:var(--text,#222);color:var(--surface,#fff);font-size:12px}
+.native-model-options::-webkit-scrollbar { width: 4px; }
+.native-model-options::-webkit-scrollbar-thumb { background: #8885; border-radius: 4px; }
+
+.native-model-controls .native-model-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 14px;
+  gap: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: left;
+  white-space: nowrap;
+}
+.native-model-controls .native-model-option:hover,
+.native-model-controls .native-model-option:focus-visible { background: var(--control-hover); outline: none; }
+.native-model-option > svg { flex-shrink: 0; color: var(--control-muted); margin-right: 2px; }
+
+.native-effort-menu { height: 98px; padding: 0; }
+.native-effort-heading { display: flex; align-items: center; flex-direction: column; padding-top: 11px; }
+.native-effort-heading > strong { font-size: 13px; line-height: 17px; color: var(--control-purple); font-weight: 600; }
+.native-model-controls .native-effort-heading > button { min-height: 0; height: 18px; padding: 0; gap: 1px; border-radius: 3px; background: transparent; font-size: 11px; line-height: 16px; font-weight: 400; color: var(--control-muted); }
+.native-effort-heading > button > svg { opacity: .65; }
+.native-model-controls .native-effort-speed { position: absolute; top: 9px; left: 9px; display: grid; place-items: center; width: 22px; height: 22px; min-height: 0; padding: 4px; border-radius: 6px; color: var(--control-purple); background: transparent; }
+.native-model-controls .native-effort-speed:hover { background: var(--control-hover); }
+.native-model-controls .native-effort-reset { position: absolute; top: 9px; right: 10px; display: grid; place-items: center; padding: 4px; min-height: 0; width: 22px; height: 22px; border-radius: 6px; color: var(--control-muted); background: transparent; }
+.native-model-controls .native-effort-reset:hover { background: var(--control-hover); }
+.native-effort-slider { position: absolute; height: 28px; left: 12px; right: 12px; bottom: 10px; border-radius: 15px; }
+.native-effort-slider::before { content:''; position:absolute; inset:1.5px 0; height:25px; border-radius:14px; background:var(--effort-unfilled,#e7e7eb); animation:none; }
+.native-effort-stops { position: absolute; display: flex; justify-content: space-between; align-items: center; inset: 0 14px; z-index: 1; pointer-events: none; }
+.native-effort-stops > i { width: 2px; height: 2px; border-radius: 50%; background: #ffffff80; }
+.native-effort-range { position: relative; display: block; z-index: 2; appearance: none; -webkit-appearance: none; background: transparent; width: 100%; height: 28px; margin: 0; padding: 0; cursor: pointer; border: none; border-radius: 15px; }
+.native-effort-range:focus { outline: none; }
+.native-effort-range:focus-visible { outline: 2px solid #bfa0f4; outline-offset: 3px; }
+.native-effort-range::-webkit-slider-runnable-track { height: 28px; background: transparent; border: 0; border-radius: 15px; }
+.native-effort-range::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 28px; height: 28px; background: #fff; border: 0; border-radius: 50%; box-shadow: 0 1px 4px #35205a22; }
+.native-effort-range::-moz-range-track { height: 28px; background: transparent; border: 0; border-radius: 15px; }
+.native-effort-range::-moz-range-thumb { width: 28px; height: 28px; background: #fff; border: 0; border-radius: 50%; box-shadow: 0 1px 4px #35205a22; }
+.native-speed-menu { padding-bottom: 5px; }
+
+:root[data-theme=dark] .native-model-controls { --control-popup: #292929; --control-hover: #3b3b3b; --control-muted: #aaa; }
+:root[data-theme=dark] .native-control-popover { border-color: #ffffff05; box-shadow: 0 9px 28px #0002; }
+@media (prefers-color-scheme: dark) {
+  :root[data-theme=system] .native-model-controls { --control-popup: #292929; --control-hover: #3b3b3b; --control-muted: #aaa; }
+  :root[data-theme=system] .native-control-popover { border-color: #ffffff05; box-shadow: 0 9px 28px #0002; }
+}
+@media (max-width: 640px) {
+  .native-control-popover { right: -35px; max-width: calc(100vw - 32px); }
+  .native-model-options { max-height: min(268px, calc(100dvh - 230px)); }
+}
+@media (prefers-reduced-motion: reduce) { .native-control-popover { animation: none; } }
+:root[data-motion=reduced] .native-control-popover { animation: none; }
+@keyframes native-control-appear { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes speed-pulse {50% {filter:brightness(1.2) drop-shadow(0 0 5px #a26ef0a0)}}
+@keyframes effort-glow {50% {filter:brightness(1.15)}}
+@keyframes effort-soft {50% {opacity:.8}}
+@media (prefers-reduced-motion: reduce) { .speed-symbol,.native-effort-slider::before {animation:none!important} }
+:root[data-motion=reduced] :is(.speed-symbol,.native-effort-slider::before) {animation:none!important}
+
+/* Composer and popup use one SpeedGlyph. */
+.speed-glyph{display:inline-flex;align-items:center;gap:2px;line-height:1}
+.speed-glyph>.speed-symbol{flex-shrink:0}
+.speed-multiplier{font-size:10px}
+.native-model-controls .native-effort-speed{width:auto;min-width:22px;max-width:44px;padding:4px 2px}
+.native-model-controls[data-effort="ultimate"] .native-effort-heading>strong{color:#ba8ee1}
+:root[data-theme=dark] .native-effort-slider{--effort-unfilled:#3c3c40}
+@media(prefers-color-scheme:dark){:root[data-theme=system] .native-effort-slider{--effort-unfilled:#3c3c40}}

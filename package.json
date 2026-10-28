@@ -1,0 +1,90 @@
+{
+  "name": "super-codex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Unofficial screenshot-calibrated Codex concept demo. No payments, no real quota resets.",
+  "type": "module",
+  "main": "electron/main.mjs",
+  "author": "Super Codex contributors",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/bridge.test.mjs && vitest run",
+    "test:e2e": "playwright test",
+    "desktop:dev": "concurrently -k \"npm:dev\" \"wait-on http://127.0.0.1:5173 && cross-env SUPER_CODEX_DEV_URL=http://127.0.0.1:5173 electron .\"",
+    "desktop": "electron .",
+    "build:win": "npm run build && electron-builder --win portable nsis --x64 --publish never",
+    "build:unpacked": "npm run build && electron-builder --win --dir --x64 --publish never"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@openai/codex": "0.165.0",
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/three": "^0.180.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^9.2.0",
+    "cross-env": "^10.1.0",
+    "electron": "^45.1.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.0",
+    "vitest": "^5.0.5",
+    "wait-on": "^9.0.1"
+  },
+  "build": {
+    "appId": "io.supercodex.playground",
+    "productName": "Super Codex",
+    "directories": {
+      "output": "release"
+    },
+    "extraResources": [
+      {
+        "from": "node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc",
+        "to": "codex"
+      },
+      {
+        "from": "docs/CODEX-APACHE-2.0.txt",
+        "to": "codex/LICENSE-APACHE-2.0.txt"
+      }
+    ],
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ],
+      "icon": "build/icon.ico",
+      "signExecutable": false
+    },
+    "nsis": {
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "artifactName": "Super-Codex-${version}-${arch}.${ext}",
+    "portable": {
+      "artifactName": "Super-Codex-${version}-${arch}-portable.${ext}"
+    }
+  },
+  "optionalDependencies": {
+    "@openai/codex-win32-x64": "npm:@openai/codex@0.165.0-win32-x64"
+  }
+}

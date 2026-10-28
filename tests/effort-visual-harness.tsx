@@ -1,0 +1,13 @@
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import {EffortVisual} from '../src/components/EffortVisual';
+import {getEfforts,normalizeEffort,type Effort} from '../src/lib/catalog';
+import '../src/components/model-controls.css';
+const query = new URLSearchParams(location.search);
+const generation = Number(query.get('generation') || 6);
+const speed = Number(query.get('speed') || 1) as 1|2|5|10|20|50;
+const effort = normalizeEffort(query.get('effort') || 'Ultra',generation);
+const levels=getEfforts(generation),index=levels.indexOf(effort);
+document.documentElement.dataset.theme='dark';
+if(query.get('motion')==='reduced') document.documentElement.dataset.motion='reduced';
+createRoot(document.getElementById('root')!).render(<div style={{position:'absolute',top:30,left:30,width:256,height:98,background:'#292929',borderRadius:16}} className="native-model-controls" data-speed={speed} data-effort={effort.replace(' ','-').toLowerCase()}><div className="native-effort-slider"><EffortVisual effort={effort} speed={speed} generation={generation} progress={index/(levels.length-1)}/><div className="native-effort-stops"/><input type="range" aria-label="reasoning" className="native-effort-range" min={0} max={levels.length-1} defaultValue={index}/></div></div>);

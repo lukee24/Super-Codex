@@ -1,0 +1,16 @@
+import { useState } from 'react';
+import { ArrowLeft, Lock, Pencil, Send, Share2, UserRound, Puzzle } from 'lucide-react';
+import type { Language } from '../lib/catalog';
+import './profile-page.css';
+
+export default function ProfilePage({language,email,onBack,onConnect}:{language:Language;email?:string;onBack:()=>void;onConnect:()=>void}) {
+  const t=(zh:string,en:string)=>language==='zh'?zh:en;
+  const [period,setPeriod]=useState(0);
+  return <main className="profile-page" data-testid="profile-page"><header className="profile-page-actions"><button aria-label={t('返回','Back')} onClick={onBack}><ArrowLeft size={16}/></button><span/><button onClick={onConnect}><Pencil size={15}/>{t('编辑','Edit')}</button><button onClick={onConnect}><Send size={15}/>{t('邀请好友','Invite friends')}</button><span className="profile-private"><Lock size={14}/>{t('私有','Private')}</span><button onClick={onConnect}><Share2 size={15}/>{t('分享','Share')}</button></header>
+    <div className="profile-page-content"><div className="profile-person"><div className="profile-person-avatar"><UserRound size={45}/></div><h1>{email||t('本地创作者','Local creator')}</h1><p>{t('非官方演示资料','Unofficial demo profile')}</p></div>
+    <div className="profile-statistics">{[t('累计 Token 数','Total tokens'),t('Token 使用峰值','Peak token usage'),t('最长任务用时','Longest task'),t('最长连续天数','Longest streak'),t('当前连续天数','Current streak')].map(label=><div key={label}><strong>—</strong><span>{label}</span></div>)}</div>
+    <section className="profile-feature"><h2>{t('精选作品','Featured work')}</h2><div className="profile-feature-empty"><span className="profile-feature-mark"><UserRound size={28}/></span><p>{t('在你的个人资料中展示网站','Show websites on your profile')}</p><button onClick={onConnect}>{t('编辑展示内容','Edit featured content')}</button></div></section>
+    <section className="profile-activity"><div className="profile-section-heading"><h2>{t('Token 活动','Token activity')}</h2><div className="profile-periods">{[t('每天','Daily'),t('每周','Weekly'),t('累计总量','Total')].map((label,i)=><button key={label} className={period===i?'active':''} aria-pressed={period===i} onClick={()=>setPeriod(i)}>{label}</button>)}</div></div><div className="profile-heatmap" role="img" aria-label={t('账户活动数据不可用','Account activity data unavailable')}>{Array.from({length:364},(_,i)=><i key={i}/>)}</div><div className="profile-months">{(language==='zh'?['11月','12月','1月','2月','3月','4月','5月','6月','7月','8月','9月','10月']:['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct']).map(m=><span key={m}>{m}</span>)}</div><p className="profile-unavailable">{t('账户活动数据不可用','Account activity data unavailable')}</p></section>
+    <section className="profile-plugins"><h2>{t('热门插件','Popular plugins')}</h2><div>{['Chrome','Gmail','GitHub','Browser','Calendar'].map(name=><button key={name} title={`${name} · ${t('演示','demo')}`} onClick={onConnect}><Puzzle size={22}/></button>)}</div></section>
+    <section className="profile-insights"><h2>{t('洞察','Insights')}</h2>{[t('快速模式','Fast mode'),t('最常用的推理强度','Most used reasoning level'),t('已探索技能数','Skills explored'),t('使用的技能总数','Total skills used')].map(label=><div key={label}><span>{label}</span><strong>—</strong></div>)}</section></div></main>;
+}

@@ -1,0 +1,54 @@
+name: Release Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Verify tag matches package version
+        run: node -e "const p=require('./package.json'); if(process.env.GITHUB_REF_NAME !== 'v'+p.version) throw new Error('Release tag must match package.json version');"
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx playwright install chromium
+      - run: npm run test:e2e
+      - name: Package unsigned Windows builds
+        run: npx electron-builder --win portable nsis --x64 --publish never
+      - name: Save release build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: super-codex-${{ github.ref_name }}-windows
+          path: release/*.exe
+          if-no-files-found: error
+      - name: Create release and upload executables
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $releaseFiles = @(Get-ChildItem -LiteralPath release -Filter '*.exe' | ForEach-Object { $_.FullName })
+          if ($releaseFiles.Count -lt 2) { throw 'Expected both portable and installer executables.' }
+          gh release view $env:GITHUB_REF_NAME *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $env:GITHUB_REF_NAME --verify-tag --title "Super Codex $env:GITHUB_REF_NAME" --notes-file docs/RELEASE_NOTES.md
+            if ($LASTEXITCODE -ne 0) { throw 'Could not create GitHub release.' }
+          }
+          gh release upload $env:GITHUB_REF_NAME @releaseFiles --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Could not upload release assets.' }

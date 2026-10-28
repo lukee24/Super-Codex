@@ -1,0 +1,54 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({headless:true});
+const page=await browser.newPage({viewport:{width:640,height:460}});
+const origin=process.env.MODEL_MENU_URL||'http://127.0.0.1:5191';
+try {
+ await page.goto(`${origin}/tests/model-control-harness.html?connected=1`);
+ await page.getByTestId('model-selector').click();
+ const menu=page.locator('.native-model-menu');
+ assert.equal(await menu.locator('.native-real-model-link,.native-real-model-menu').count(),0);
+ assert.equal(await menu.locator('[data-official-model-id]').count(),2);
+ assert.equal(await menu.locator('[data-model-id]').count(),16);
+ assert.equal(await menu.getByRole('group',{name:'Official models'}).getByRole('menuitemradio').count(),2);
+ assert.equal(await menu.getByRole('group',{name:'Concept response styles'}).getByRole('menuitemradio').count(),16);
+ await menu.locator('[data-official-model-id=official-second]').click();
+ assert.equal(await page.getByTestId('model-selector').textContent(),'Official second');
+ assert.equal(await page.locator('[data-selected-official]').getAttribute('data-selected-official'),'official-second');
+ await page.getByTestId('model-selector').click();await menu.locator('[data-model-id=apex]').click();
+ assert.equal(await page.locator('[data-selected-concept]').getAttribute('data-selected-concept'),'apex');
+ assert.equal(await page.locator('[data-selected-official]').getAttribute('data-selected-official'),'official-second');
+ assert.equal(await page.getByTestId('model-selector').textContent(),'Official second');
+ await page.goto(`${origin}/tests/model-control-harness.html`);
+ await page.getByTestId('model-selector').click();
+ assert.equal(await menu.locator('[data-official-model-id]').count(),0);
+ assert.equal(await menu.locator('[data-model-id]').count(),16);
+ assert.equal(await menu.getByRole('button',{name:'Connect ChatGPT'}).count(),0);
+ assert.equal(await menu.getByText('Screenshot reference · verify on connection').count(),1);
+ const expected=['Default','GPT-6.1 Sol','GPT-6 Astra','GPT-6.1 Terra','GPT-6 Sol','GPT-6 Luna','GPT-5.6 Sol','GPT-5.6 Terra','GPT-5.6 Luna'];
+ const refs=menu.locator('[data-reference-model]');
+ assert.deepEqual(await refs.allTextContents(),expected);
+ assert.equal(await refs.count(),9);
+ for(const ref of await refs.all()) assert.equal(await ref.isEnabled(),true);
+ assert.equal(await page.locator('[data-selected-official]').getAttribute('data-selected-official'),'official-first');
+ // The menu opens at the screenshot's original-model rows instead of silently
+ // scrolling straight to a selected fictional style lower down the list.
+ assert.equal(await menu.locator('.native-model-options').evaluate(el=>el.scrollTop),0);
+ await menu.locator('[data-reference-model="GPT-5.6 Luna"]').click();
+ assert.equal(await page.getByTestId('model-selector').textContent(),'GPT-5.6 Luna');
+ assert.equal(await page.locator('[data-selected-reference]').getAttribute('data-selected-reference'),'GPT-5.6 Luna');
+ assert.equal(await page.locator('[data-selected-official]').getAttribute('data-selected-official'),'official-first');
+ assert.notEqual(await page.locator('body').getAttribute('data-connect-requested'),'yes');
+ await page.getByTestId('model-selector').click();
+ await menu.locator('[data-reference-model="default"]').click();
+ assert.equal(await page.locator('[data-selected-reference]').getAttribute('data-selected-reference'),'default');
+ assert.equal(await page.getByTestId('model-selector').textContent(),'Default');
+ assert.equal(await page.locator('[data-selected-official]').getAttribute('data-selected-official'),'official-first');
+ await page.getByTestId('model-selector').click();
+ await menu.focus();
+ await page.keyboard.press('End');
+ await page.keyboard.press('Enter');
+ assert.equal(await page.locator('[data-selected-concept]').getAttribute('data-selected-concept'),'apex');
+ assert.equal(await page.locator('[data-selected-official]').getAttribute('data-selected-official'),'official-first');
+ console.log('PASS: connected catalog and 16 concepts work independently; screenshot references record only a pending display name and never select an official model or start login.');
+} finally {await browser.close();}

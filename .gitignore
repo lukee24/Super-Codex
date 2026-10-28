@@ -1,0 +1,13 @@
+node_modules/
+dist/
+release/
+test-results/
+playwright-report/
+.cache/
+.env*
+*.log
+*.tsbuildinfo
+auth.json
+.codex/
+artifacts/
+REVIEW.md
