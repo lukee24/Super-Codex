@@ -274,12 +274,17 @@ test('mechanical drag needs a full pull, resets both quotas once per gesture, an
   await expect(handle).toHaveAttribute('aria-valuenow', '0');
   expect((await saved(page)).resetCount).toBe(0);
   expect((await saved(page)).quotas).toEqual({ session: 17, weekly: 23 });
+  await page.evaluate(() => {
+    (window as any).__resetFlashSeen = false;
+    const app = document.querySelector('.app')!;
+    new MutationObserver(() => { if (app.classList.contains('reset-flash')) (window as any).__resetFlashSeen = true; }).observe(app, { attributes: true, attributeFilter: ['class'] });
+  });
   const settledRect = (await handle.boundingBox())!;
   await page.mouse.move(settledRect.x + settledRect.width / 2, settledRect.y + settledRect.height / 2);
   await page.mouse.down();
   await page.mouse.move(settledRect.x + settledRect.width / 2, settledRect.y + settledRect.height / 2 + 180, { steps: 15 });
   await expect.poll(async () => (await saved(page)).resetCount).toBe(1);
-  await expect(page.locator('.app')).toHaveClass(/reset-flash/);
+  expect(await page.evaluate(() => (window as any).__resetFlashSeen)).toBe(true);
   await page.mouse.move(settledRect.x + settledRect.width / 2, settledRect.y + settledRect.height / 2 + 190);
   await page.mouse.up();
   expect((await saved(page)).quotas).toEqual({ session: 100, weekly: 100 });

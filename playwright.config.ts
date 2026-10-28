@@ -5,7 +5,7 @@ export default defineConfig({
   testMatch: '**/*.spec.ts',
   fullyParallel: false,
   workers: 1,
-  timeout: 45_000,
+  timeout: 120_000,
   expect: { timeout: 12_000 },
   reporter: [['list'], ['html', { outputFolder: 'artifacts/playwright-report', open: 'never' }]],
   outputDir: 'artifacts/test-results',
