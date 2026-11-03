@@ -1,5 +1,21 @@
 # Super Codex · 超级 Codex
 
+## [Open Web Demo →](https://lukee24.github.io/Super-Codex/)
+
+### [打开网页版，立即体验 →](https://lukee24.github.io/Super-Codex/)
+
+No download required. Try Super Codex directly in your browser.
+
+无需下载安装，点击上方链接即可体验 Super Codex 网页演示版。
+
+[Download for Windows · 下载 Windows 桌面版](https://github.com/lukee24/Super-Codex/releases/latest)
+
+Web demo features run locally in your browser. To connect to ChatGPT, use the Windows desktop app.
+
+网页版提供本地模拟体验；连接 ChatGPT 请使用 Windows 桌面版。
+
+---
+
 **An unofficial Codex-inspired concept client exploring new possibilities for human–AI collaboration.** Super Codex combines a familiar workspace with imagined future models, animated reasoning effects, simulated memberships and an interactive mechanical quota resetter.
 
 **一个非官方的 Codex 概念客户端，探索人机协作的更多可能。** Super Codex 将熟悉的工作区与富有想象力的功能结合在一起：从未来型号和动态推理效果，到模拟会员和可交互的机械额度重置器。
